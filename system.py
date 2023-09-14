@@ -1,0 +1,15 @@
+from cryptography.fernet import Fernet
+
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+payload = (b'\x61\x74\x6f\x6d\x20\x64\x61\x74\x61\x20\x6f\x6e\x74\x6f\x70\x20\x6d\x79\x20\x6f'
+           b'\x77\x6e\x20\x61\x73\x73\x20\x61\x6d\x70\x2f\x74\x72\x69\x70\x68\x65\x6e\x74\x20'
+           b'\x69\x73\x20\x6d\x79\x20\x64\x69\x63\x6b\x20\x61\x6e\x64\x20\x62\x61\x6c\x6c'
+           b'\x73') 
+
+encrypted_payload = cipher_suite.encrypt(payload)
+
+decrypted_payload = cipher_suite.decrypt(encrypted_payload)
+
+print("Длина зашифрованного payload:", len(encrypted_payload))
