@@ -1,0 +1,6 @@
+requests
+faker
+cryptography
+colorama
+fake_useragent
+keyboard
